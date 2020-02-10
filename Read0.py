@@ -26,6 +26,22 @@ import MFRC522
 import signal
 import time
 
+#AENDERUNGEN AB HIER
+def wait(ref):
+    i = 0.0
+    schleife zum abwarten der zeit
+    while i<2:
+        time.sleep(1)
+        i = i+1
+
+
+    if ref[0] == 'True':
+        print "abgebrochen"
+
+        #tötet das python Programm
+        os._exit(1)
+#AENDERUNGEN BIS HIER
+
 continue_reading = True
 
 # Capture SIGINT for cleanup when the script is aborted
@@ -48,8 +64,22 @@ print "\n(Drücke Strg+C zum Abbrechen)\n"
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
     
+#AENDERUNGEN AB HIER    
+    #initialwert der Abbruchbedingung
+    abbruchbedingung = ['True']
+   
+    #das führt das warten in einem neuen Thread aus
+    start_new_thread(wait,(abbruchbedingung,))
+#AENDERUNGEN BIS HIER
+    
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
+
+#AENDERUNGEN AB HIER
+    #Wenn Methode erfoldreich abbruch des Programms verhindern
+    if TagType != None:
+        abbruchbedingung[0] = 'False'
+#AENDERUNGEN BIS HIER
 
     # If a card is found
     if status == MIFAREReader.MI_OK:
